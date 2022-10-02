@@ -42,21 +42,6 @@
             margin: 50px auto;
         }
 
-        &:before {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 125vw;
-            opacity: 0.05;
-            background-repeat: no-repeat;
-            background-position: -10vw 5%;
-            background-size: cover;
-            pointer-events: none;
-            z-index: -1;
-        }
-
         .triple-image-container {
             display: flex;
             flex-wrap: wrap;

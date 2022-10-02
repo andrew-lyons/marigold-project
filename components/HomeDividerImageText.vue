@@ -100,7 +100,7 @@
             width: 948px;
             height: 378px;
             position: absolute;
-            left: 34.7vw;
+            left: 34.1vw;
 
             @media screen and (max-width: 1024px) {
                 left: 45vw;

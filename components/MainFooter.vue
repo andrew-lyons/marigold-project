@@ -34,24 +34,9 @@ footer {
     background: var(--white);
     clear: both;
     border-top: 0;
-    width: var(--width);
+    width: 100%;
     margin: 0 auto;
-    padding: 60px 0;
-    max-width: 1140px;
-
-    &:before {
-        content: " ";
-        display: block;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 150vw;
-        left: -25vw;
-        right: -25vw;
-        background-color: var(--white);
-        box-shadow: 0 0 20px 15px var(--white);
-        z-index: -1;
-    }
+    padding: 60px 10.4vw;
 
     @media screen and (max-width: 768px) {
         margin-top: 70px;
