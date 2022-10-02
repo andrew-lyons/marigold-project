@@ -1,5 +1,5 @@
 <template>
-    <main id="home-about-me">
+    <main class="ishome" id="home-about-me">
         <div class="triple-image-container">
             <div class="triple-image-container-img1">
                 <img src="../static/nora-us.jpg" alt="">

@@ -41,3 +41,12 @@ main {
   margin-right: auto;
   position: relative;
 }
+
+main.ishome {
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+main.io-visible {
+    opacity: 1 !important;
+}

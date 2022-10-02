@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main class="ishome">
     <div class="homepage-hero">
       <div class="homepage-hero-image">
         <svg
