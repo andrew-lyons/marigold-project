@@ -1,0 +1,430 @@
+<template>
+    <Transition>
+        <div v-if="loading" class="loader">
+            <div class="clock-loader"></div>
+        </div>
+
+        <div v-else class="blog">
+            <div class="blog-posts">
+                <h2 v-html="tagFilter || dateFilter"></h2>
+
+                <div class="blog-posts-article" v-for="post, idx in posts" :key="idx+post">
+                    <a @click="redirect(post.slug)" class="blog-posts-article-title" v-html="post.title"></a>
+
+                    <a @click="redirectDate(post.date)" class="blog-posts-article-meta">{{ post.date }}</a>
+                    <a @click="redirect(post.slug, true)" class="blog-posts-article-meta">Leave a comment</a>
+
+                    <a @click="redirect(post.slug)"><img class="blog-posts-article-featured" :src="post.featured_image"
+                            alt=""></a>
+
+                    <a @click="redirect(post.slug)" class="blog-posts-article-blurb" v-html="post.excerpt"></a>
+
+                    <div class="blog-posts-article-links">
+                        <a @click="redirect(post.slug)" class="blog-posts-article-links-href">Read more</a>
+
+                        <div class="blog-posts-article-links-tags">
+                            <a @click="redirectTags(tag.name)" v-for="tag, tagIdx in post.tags"
+                                :key="tag+tagIdx+'f'+idx">
+                                {{ tag.name }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </Transition>
+</template>
+  
+<script lang="ts">
+import { defineComponent, inject, ref, computed, onMounted } from 'vue';
+
+export default defineComponent({
+    name: 'BlogFilterView',
+    components: {
+    },
+    setup() {
+        const post = ref({} as any);
+        const comments = ref({} as any);
+        const wp = 'https://public-api.wordpress.com/rest/v1.1/sites/micaylalyons.wordpress.com';
+        const loading = ref(true);
+        const allPosts = ref([] as any);
+        const tagFilter = ref('');
+        const dateFilter = ref('');
+
+        onMounted(() => {
+            const searchParam = new URLSearchParams(location.search);
+            tagFilter.value = searchParam.get('categoryfilter') || '';
+            dateFilter.value = searchParam.get('datefilter') || '';
+
+            fetch(`${wp}/posts`)
+                .then(response => response.json())
+                .then(data => {
+                    allPosts.value = data.posts.filter((post: any) => Object.keys(post.categories).includes('blog-post'))
+                    loading.value = false;
+                });
+        })
+
+        const posts = computed(() => {
+            const formattedPosts = allPosts.value.map((post: any) => {
+                post.date = new Date(post.date).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' });
+                post.excerpt = post.excerpt.replaceAll('[', '').replaceAll(']', '');
+                post.featured_image = post.featured_image ? post.featured_image : "../assets/marigold_bg.jpg"
+                return post
+            });
+
+            if (tagFilter.value) {
+                return formattedPosts.filter((post: any) => {
+                    return Object.keys(post.tags).includes(tagFilter.value);
+                })
+            }
+            else {
+                return formattedPosts.filter((post: any) => {
+                    return new Date(dateFilter.value).getMonth() === new Date(post.date).getMonth();
+                })
+            }
+        });
+
+        const redirect = (slug: string, commentSection = false) => {
+            window.location.href = `/blog/detail${commentSection ? '#comments' : ''}?slug=${slug}`;
+        }
+
+        const redirectDate = (date: string) => {
+            const toDate = new Date(date).toLocaleString('default', { month: 'long', year: 'numeric' });
+            window.location.href = `/blog/filter?datefilter=${toDate}`;
+        }
+
+        const redirectTags = (tag: string) => {
+            window.location.href = `/blog/filter?categoryfilter=${tag}`;
+        }
+
+        return {
+            posts,
+            loading,
+            tagFilter,
+            dateFilter,
+
+            redirect,
+            redirectDate,
+            redirectTags
+        }
+    }
+})
+
+</script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=MonteCarlo&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+</style>
+        
+<style lang="scss">
+:root {
+    --white: #FFFFFF;
+    --primary: #3B0D11;
+    --primary-light: #6A3937;
+
+    --width: 79.166vw;
+}
+
+* {
+    box-sizing: border-box;
+    color: var(--primary);
+    fill: var(--primary);
+}
+
+body {
+    font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    background: rgb(240, 233, 232);
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+// rgb(251, 241, 238);
+#app {
+    overflow: hidden;
+}
+
+main {
+    display: flex;
+    width: var(--width);
+    max-width: 1140px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+
+.v-enter-active,
+.v-leave-active {
+    transition: opacity 0.125s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+    opacity: 0;
+}
+
+.loader {
+    display: flex;
+    justify-content: center;
+    height: 80vh;
+    width: 100vw;
+    padding-top: 100px;
+
+    .clock-loader {
+        --clock-color: var(--primary);
+        --clock-width: 4rem;
+        --clock-radius: calc(var(--clock-width) / 2);
+        --clock-minute-length: calc(var(--clock-width) * 0.4);
+        --clock-hour-length: calc(var(--clock-width) * 0.2);
+        --clock-thickness: 0.2rem;
+
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: var(--clock-width);
+        height: var(--clock-width);
+        border: 2px solid var(--clock-color);
+        border-radius: 50%;
+
+        &::before,
+        &::after {
+            position: absolute;
+            content: "";
+            top: calc(var(--clock-radius) * 0.25);
+            width: var(--clock-thickness);
+            background: var(--clock-color);
+            border-radius: 10px;
+            transform-origin: center calc(100% - calc(var(--clock-thickness) / 2));
+            animation: spin infinite linear;
+        }
+
+        &::before {
+            height: var(--clock-minute-length);
+            animation-duration: 2s;
+        }
+
+        &::after {
+            top: calc(var(--clock-radius) * 0.25 + var(--clock-hour-length));
+            height: var(--clock-hour-length);
+            animation-duration: 15s;
+        }
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(1turn);
+    }
+}
+
+.blog {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    max-width: 1140px;
+    width: var(--width);
+    margin-bottom: 70px;
+    margin-top: 40px;
+
+    a {
+        cursor: pointer;
+    }
+
+    h2 {
+        font-size: 64px;
+        line-height: 72px;
+        font-weight: 100;
+        margin: 36px 0 64px;
+        width: 100%;
+        cursor: default;
+    }
+
+    &-posts {
+        width: 100%;
+
+        @media screen and (max-width: 1024px) {
+            width: 100%;
+            order: 2;
+            padding: 0;
+        }
+
+        &-article {
+            background: var(--white);
+            padding: 40px;
+            text-align: left;
+            margin-bottom: 24px;
+
+            @media screen and (max-width: 600px) {
+                padding: 20px;
+            }
+
+            &-title {
+                display: flex;
+                font-family: 'Montserrat', sans-serif;
+                font-size: 40px;
+                line-height: 56px;
+                font-weight: 200;
+                text-transform: none;
+                margin: 0;
+                cursor: pointer;
+                text-align: left;
+                width: 100%;
+                opacity: 1;
+                transition: opacity 0.5s;
+                text-decoration: none;
+
+                &:hover {
+                    opacity: 0.5;
+                }
+            }
+
+            &-meta {
+                display: inline-flex;
+                font-family: Lato, sans-serif;
+                font-size: 8px;
+                font-weight: 500;
+                letter-spacing: 1px;
+                margin: 0 16px 20px 0;
+                text-transform: uppercase;
+                cursor: pointer;
+                opacity: 1;
+                transition: opacity 0.5s;
+
+                &:hover {
+                    opacity: 0.5;
+                }
+            }
+
+            &-featured {
+                width: 100%;
+                height: auto;
+            }
+
+            &-blurb {
+                margin: 14px 0 28px;
+                padding: 0;
+                letter-spacing: 2px;
+                font-weight: 300;
+                line-height: 1.625;
+            }
+
+            &-links {
+                display: flex;
+                flex-wrap: wrap;
+
+                >a {
+                    display: inline-flex;
+                    font-family: "Montserrat", Sans-serif;
+                    font-size: 11px;
+                    font-weight: 400;
+                    text-transform: uppercase;
+                    fill: var(--white);
+                    background-color: var(--white);
+                    border-style: solid;
+                    border-width: 1px 1px 1px 1px;
+                    border-color: var(--primary-light);
+                    border-radius: 0px 0px 0px 0px;
+                    padding: 10px 20px;
+                    margin-bottom: 24px;
+                    cursor: pointer;
+                    text-decoration: none;
+                    letter-spacing: 2px;
+                    transition: background-color 0.5s, color 0.5s;
+
+                    &:hover {
+                        background-color: var(--primary-light);
+                        color: var(--white);
+                    }
+                }
+
+                &-tags {
+                    display: flex;
+                    width: 100%;
+
+                    a {
+                        background-color: none;
+                        padding: 0;
+                        margin-right: 16px;
+                        text-decoration: none;
+                        font-size: 11px;
+                        letter-spacing: 1px;
+                        opacity: 1;
+                        transition: opacity 0.5s;
+
+                        &:hover {
+                            opacity: 0.5;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    &-sidebar {
+        display: flex;
+        flex-wrap: wrap;
+        width: 31.6%;
+        height: 100%;
+
+        @media screen and (max-width: 1024px) {
+            width: 100%;
+            order: 1;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        &-category {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            cursor: default;
+
+            @media screen and (max-width: 1024px) {
+                width: 45%;
+            }
+
+            @media screen and (max-width: 768px) {
+                width: 100%;
+            }
+
+            h3 {
+                font-size: 15px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 3px;
+                margin-top: 0;
+            }
+
+            a {
+                border-bottom: 0;
+                margin-bottom: 10px;
+                padding-bottom: 10px;
+                padding: 10px;
+                text-align: center;
+                background: var(--white);
+                text-transform: uppercase;
+                letter-spacing: 5px;
+                font-weight: 800;
+                font-size: 12px;
+                line-height: 16px;
+                padding: 10px;
+                width: 100%;
+                text-decoration: none;
+                transition: background-color 0.5s, color 0.5s;
+
+                &:hover {
+                    background-color: var(--primary-light);
+                    color: var(--white);
+                }
+            }
+        }
+    }
+}
+</style>
+  
