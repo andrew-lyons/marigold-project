@@ -1,38 +1,44 @@
 <template>
-    <Transition>
-        <div v-if="loading" class="loader">
-            <div class="clock-loader"></div>
-        </div>
+    <div>
+        <MainHeader />
 
-        <div v-else class="blog">
-            <div class="blog-posts">
-                <h2 v-html="tagFilter || dateFilter"></h2>
-
-                <div class="blog-posts-article" v-for="post, idx in posts" :key="idx+post">
-                    <a @click="redirect(post.slug)" class="blog-posts-article-title" v-html="post.title"></a>
-
-                    <a @click="redirectDate(post.date)" class="blog-posts-article-meta">{{ post.date }}</a>
-                    <a @click="redirect(post.slug, true)" class="blog-posts-article-meta">Leave a comment</a>
-
-                    <a @click="redirect(post.slug)"><img class="blog-posts-article-featured" :src="post.featured_image"
-                            alt=""></a>
-
-                    <a @click="redirect(post.slug)" class="blog-posts-article-blurb" v-html="post.excerpt"></a>
-
-                    <div class="blog-posts-article-links">
-                        <a @click="redirect(post.slug)" class="blog-posts-article-links-href">Read more</a>
-
-                        <div class="blog-posts-article-links-tags">
-                            <a @click="redirectTags(tag.name)" v-for="tag, tagIdx in post.tags"
-                                :key="tag+tagIdx+'f'+idx">
-                                {{ tag.name }}
-                            </a>
+        <Transition>
+            <div v-if="loading" class="loader">
+                <div class="clock-loader"></div>
+            </div>
+    
+            <div v-else class="blog">
+                <div class="blog-posts">
+                    <h2 v-html="tagFilter || dateFilter"></h2>
+    
+                    <div class="blog-posts-article" v-for="post, idx in posts" :key="idx+post">
+                        <a @click="redirect(post.slug)" class="blog-posts-article-title" v-html="post.title"></a>
+    
+                        <a @click="redirectDate(post.date)" class="blog-posts-article-meta">{{ post.date }}</a>
+                        <a @click="redirect(post.slug, true)" class="blog-posts-article-meta">Leave a comment</a>
+    
+                        <a @click="redirect(post.slug)"><img class="blog-posts-article-featured" :src="post.featured_image"
+                                alt=""></a>
+    
+                        <a @click="redirect(post.slug)" class="blog-posts-article-blurb" v-html="post.excerpt"></a>
+    
+                        <div class="blog-posts-article-links">
+                            <a @click="redirect(post.slug)" class="blog-posts-article-links-href">Read more</a>
+    
+                            <div class="blog-posts-article-links-tags">
+                                <a @click="redirectTags(tag.name)" v-for="tag, tagIdx in post.tags"
+                                    :key="tag+tagIdx+'f'+idx">
+                                    {{ tag.name }}
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </Transition>
+        </Transition>
+
+        <MainFooter />
+    </div>
 </template>
   
 <script lang="ts">
