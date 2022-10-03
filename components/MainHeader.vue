@@ -1,19 +1,30 @@
 <template>
     <div>
         <nav>
-            <router-link to="/">Home</router-link>
-            <router-link to="/about">About</router-link>
-            <router-link to="/blog">Blog</router-link>
+            <router-link :class="currentRoute === '/' ? 'active-route' : ''" to="/">Home</router-link>
+            <router-link :class="currentRoute === '/about' ? 'active-route' : ''" to="/about">About</router-link>
+            <router-link :class="currentRoute === '/blog' ? 'active-route' : ''" to="/blog">Blog</router-link>
             <!-- <router-link to="/store">Store</router-link> -->
         </nav>
     
         <header>
-            <h1>
-                The Marigold Project
-            </h1>
+            <a href="/">
+                <h1>
+                    The Marigold Project
+                </h1>
+            </a>
         </header>
     </div>
 </template>
+
+<script setup>
+import { onMounted, ref } from 'vue';
+const currentRoute = ref('');
+
+onMounted(() => {
+    currentRoute.value = location.href;
+})
+</script>
 
 <style lang="scss" scoped>
 nav {
@@ -39,10 +50,6 @@ nav {
         font-size: 12px;
         padding: 20px;
         text-decoration: none;
-
-        &.router-link-exact-active {
-            border-bottom: 1px solid var(--primary);
-        }
     }
 }
 

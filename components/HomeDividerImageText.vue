@@ -1,7 +1,7 @@
 <template>
     <main class="ishome">
         <div class="side-text">
-            <p>Thank you for being here to contribute to the mission of raising awareness and increasing advocacy for perinatal loss. If you are here because you or a loved one have experienced the devastation of perinatal loss, I am so deeply sorry. We hope that you find solace, the holding of space, and resolution on this site.</p>
+            <p>Words hold so much beauty and so much power. I hope that the words throughout this blog impact you in some way, touch your heart, and make you feel seen and understood.</p>
        
             <a href="/blog">Go to blog</a>
         </div>

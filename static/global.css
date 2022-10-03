@@ -1,5 +1,9 @@
 @import url('./fonts.css');
 
+.nuxt-link-exact-active {
+    border-bottom: 1px solid var(--primary);
+}
+
 body {
     overflow-x: hidden;
 }
@@ -8,7 +12,6 @@ body {
     --white: #FFFFFF;
     --primary: #3B0D11;
     --primary-light: #6A3937;
-
     --width: 79.166vw;
 }
 
