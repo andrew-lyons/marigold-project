@@ -27,6 +27,9 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+a {
+    cursor: pointer;
+}
 nav {
     position: fixed;
     top: 0;
