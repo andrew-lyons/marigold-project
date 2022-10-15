@@ -19,7 +19,7 @@
     
                             <div @click="shippingChange(true)">
                                 <input type="radio" name="shippingorlocal" ref="formIsShipping">
-                                <p>I'll need my ornament shipped to me</p>
+                                <p>I'll need my ornament shipped to me ($2 charge)</p>
                             </div>
                         </div>
     
@@ -163,6 +163,8 @@ export default defineComponent({
             .then(response => response.json())
             .then(data => {
                 stripeChargeError.value = "";
+
+                console.log('Data: ', data);
                 window.location.href = '/store/thankyou';
             })
             .catch(err => {
