@@ -103,7 +103,7 @@ export default defineComponent({
         const babyFamName = ref('');
         const ornamentDates = ref('');
         const formSpecialRequests = ref('');
-        const dollarAmount = ref(10);
+        const dollarAmount: Ref<any> = ref(10);
 
         const stripeChargeError = ref('');
 
@@ -180,7 +180,7 @@ export default defineComponent({
                 displayAddressForm.value = true;
 
                 if (dollarAmount.value % 10 === 0) {
-                    dollarAmount.value = dollarAmount.value + 2;
+                    dollarAmount.value = parseInt(dollarAmount.value, 10) + 2.0;
                 }
             }
             else {
