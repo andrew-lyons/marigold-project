@@ -56,7 +56,7 @@
 <script lang="ts">
 // import router from '@/router';
 
-import { computed, defineComponent, inject, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import MainHeader from '~/components/MainHeader.vue';
 
 export default defineComponent({
@@ -80,7 +80,7 @@ export default defineComponent({
             return allPosts.value.map((post: any) => {
                 post.date = new Date(post.date).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' });
                 post.excerpt = post.excerpt.replaceAll('[', '').replaceAll(']', '');
-                post.featured_image = post.featured_image ? post.featured_image : "../assets/marigold_bg.jpg"
+                post.featured_image = post.featured_image ? post.featured_image : "../../static/marigold_bg.jpg"
                 return post
             });
         });
