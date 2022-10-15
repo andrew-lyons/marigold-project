@@ -13,15 +13,6 @@
 
             <div class="column">
                 <h4>Get In Touch</h4>
-                <!-- <a href="mailto:mhupp21@gmail.com">
-                    <font-awesome-icon icon="envelope" />
-                </a>
-                <a>
-                    <font-awesome-icon icon="fa-brands fa-facebook" />
-                </a>
-                <a>
-                    <font-awesome-icon icon="fa-brands fa-instagram" />
-                </a> -->
             </div>
         </div>
     </footer>

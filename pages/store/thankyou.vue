@@ -8,7 +8,7 @@
             <p>Thank you so much for allowing us to honor your baby in this way, or for supporting those of us in the loss community!</p>
 
             <p>For any ideas, questions, or concerns, please email us:</p>
-            <a href="mailto:micayla@themarigoldproject.com">here</a>
+            <a href="mailto:micaylalyons@themarigoldproject.com">here</a>
         </main>
 
         <MainFooter />

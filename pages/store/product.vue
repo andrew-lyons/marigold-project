@@ -170,7 +170,7 @@ export default defineComponent({
             .catch(err => {
                 console.log('woops', err);
 
-                stripeChargeError.value = "There was an error processing your payment. Please try again or email us <a href='mailto:micayla@themarigoldproject.com'>here</a>";
+                stripeChargeError.value = "There was an error processing your payment. Please try again or email us <a href='mailto:micaylalyons@themarigoldproject.com'>here</a>";
             });
         }
 
