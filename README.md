@@ -1,4 +1,4 @@
-# magnolia-project
+# themarigoldproject
 
 ## Build Setup
 
