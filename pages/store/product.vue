@@ -24,12 +24,12 @@
                         </div>
     
                         <div class="checkout-form-group">
-                            <input type="text" v-model="formName" placeholder="Your name (required)">
-                            <input type="text" v-model="formEmail" placeholder="Your email (required)">
+                            <input :class="formNameErr ? 'checkout-form-group-error' : ''" type="text" v-model="formName" placeholder="Your name (required)">
+                            <input :class="formEmailErr ? 'checkout-form-group-error' : ''" type="text" v-model="formEmail" placeholder="Your email (required)">
                         </div>
     
                         <div v-if="displayAddressForm" class="checkout-form-group">
-                            <input type="text" v-model="formShippingAddress" placeholder="Full shipping address (required)">
+                            <input :class="formShippingAddressErr ? 'checkout-form-group-error' : ''" type="text" v-model="formShippingAddress" placeholder="Full shipping address (required)">
                         </div>
     
                         <div class="checkout-form-group">
@@ -43,8 +43,15 @@
                         </div>
     
                         <div class="checkout-form-group">
-                            <input v-model="dollarAmount" type="range" id="cowbell" name="cowbell" min="10" max="100"
-                                step="10">
+                            <input
+                                v-model="dollarAmount"
+                                type="range"
+                                id="cowbell"
+                                name="cowbell"
+                                :min="displayAddressForm ? 12 : 10"
+                                :max="displayAddressForm ? 102 : 100"
+                                step="10"
+                            >
                             <p class="amount">$ {{ dollarAmount }}</p>
                         </div>
                     </div>
@@ -80,30 +87,59 @@ export default defineComponent({
         const displayAddressForm = ref(false);
 
         const formName = ref('');
+        const formNameErr = ref('');
+
         const formEmail = ref('');
+        const formEmailErr = ref('');
+
+        const formShippingAddress = ref('');
+        const formShippingAddressErr = ref('');
+
         const babyFamName = ref('');
         const ornamentDates = ref('');
-        const formShippingAddress = ref('');
         const dollarAmount = ref(20);
 
         const publishableKey = 'pk_test_51LsxDgCGzu6CcAA05tXeRA7g5SzzN1l9LnxUu8iCSZCGAYfaDmDYc8AEw6cuEwoWNbplSG2YBUVIE3fL5EqgYy4U002R4RetiP';
-        // Set your publishable key: remember to change this to your live publishable key in production
-        // See your keys here: https://dashboard.stripe.com/apikeys
-        // const stripe = Stripe('pk_test_51LsxDgCGzu6CcAA05tXeRA7g5SzzN1l9LnxUu8iCSZCGAYfaDmDYc8AEw6cuEwoWNbplSG2YBUVIE3fL5EqgYy4U002R4RetiP');
 
         onMounted(() => {
             const slug = new URLSearchParams(location.search).get('slug');
             fetch(`${wp}/posts/slug:${slug}`)
                 .then(response => response.json())
-                .then(data => { post.value = data; console.log('yo!', post.value); });
+                .then(data => post.value = data);
         })
 
         const submit = () => {
-            elementRef.value.submit();
+            if (validateForm()) {
+                elementRef.value.submit();
+            }
         };
 
+        const validateForm = (): boolean => {
+            if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formEmail.value))) {
+                formEmailErr.value = 'Please include a valid email';
+            }
+            else {
+                formEmailErr.value = '';
+            }
+
+            if (formName.value.length <= 0) {
+                formNameErr.value = 'Please include your name';
+            }
+            else {
+                formNameErr.value = '';
+            }
+
+            if (displayAddressForm.value && formShippingAddress.value.length <= 0) {
+                formShippingAddressErr.value = 'Please include a shipping address';
+            }
+            else {
+                formShippingAddressErr.value = '';
+            }
+
+            return !formEmailErr.value && !formNameErr.value && !formShippingAddressErr.value;
+        }
+
         const tokenCreated = (token: any) => {
-            console.log('token!', token);
             const queryParams = new URLSearchParams();
             queryParams.set('formName', formName.value);
             queryParams.set('formEmail', formEmail.value);
@@ -112,25 +148,30 @@ export default defineComponent({
             queryParams.set('formShippingAddress', formShippingAddress.value);
             queryParams.set('amount', (dollarAmount.value * 100).toString());
             queryParams.set('token', token['id']);
+            queryParams.set('ornament', post.value.title);
 
             fetch(`https://serverless-stripe-three.vercel.app/api/charge?${queryParams.toString()}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log('hi', data);
-                })
-                .catch(err => {
-                    console.log('woops', err);
-                })
+            .then(response => response.json())
+            .then(data => console.log('response!!!', data))
+            .catch(err => console.log('woops', err));
         }
 
         const shippingChange = (currentStat: boolean) => {
             if (currentStat) {
                 formIsShipping.value.checked = true;
                 displayAddressForm.value = true;
+
+                if (dollarAmount.value % 10 === 0) {
+                    dollarAmount.value = dollarAmount.value + 2;
+                }
             }
             else {
                 formIsLocalPickup.value.checked = true;
                 displayAddressForm.value = false;
+
+                if (dollarAmount.value % 10 !== 0) {
+                    dollarAmount.value = dollarAmount.value - 2;
+                }
             }
         }
 
@@ -148,6 +189,10 @@ export default defineComponent({
             formShippingAddress,
             formName,
             formEmail,
+
+            formNameErr,
+            formEmailErr,
+            formShippingAddressErr,
 
             submit,
             shippingChange,
@@ -288,6 +333,10 @@ main {
         text-align: left;
     }
 
+    @media screen and (max-width: 768px) {
+        flex-wrap: wrap;
+    }
+
     .product {
         display: flex;
         height: 100%;
@@ -295,6 +344,12 @@ main {
         flex-wrap: wrap;
         padding-right: 40px;
         justify-content: center;
+
+        @media screen and (max-width: 768px) {
+            width: 100%;
+            padding: 0;
+            margin-bottom: 24px;
+        }
 
         h2 {
             font-weight: 300;
@@ -313,6 +368,10 @@ main {
     .checkout {
         width: 50%;
 
+        @media screen and (max-width: 768px) {
+            width: 100%;
+        }
+
         input:not([type=range]),
         textarea {
             border: none;
@@ -324,6 +383,10 @@ main {
             height: 64px;
             font-family: 'Montserrat';
             padding: 8px 16px;
+
+            @media screen and (max-width: 768px) {
+                height: 84px;
+            }
 
             &::placeholder {
                 font-size: 16px;
@@ -341,6 +404,10 @@ main {
                 width: 100%;
                 margin-bottom: 16px;
 
+                @media screen and (max-width: 600px) {
+                    flex-wrap: wrap;
+                }
+
                 &-wrapped {
                     flex-wrap: wrap;
 
@@ -350,6 +417,10 @@ main {
                         width: 100%;
                         cursor: pointer;
                     }
+                }
+
+                &-error {
+                    border: 1px solid red !important;
                 }
 
                 input[type=text] {
@@ -365,6 +436,11 @@ main {
 
                     &:nth-child(2n) {
                         margin-left: 16px;
+
+                        @media screen and (max-width: 600px) {
+                            margin-left: 0;
+                            margin-top: 16px;
+                        }
                     }
                 }
 

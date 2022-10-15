@@ -107,11 +107,12 @@ main {
             &-item {
                 padding: 20px;
                 width: 19vw;
+                max-width: 273px;
                 background-color: var(--white);
                 margin-bottom: 16px;
                 border-radius: 6px;
                 box-shadow: 0px 3px 5px 2px rgb(0 0 0 / 30%);
-                margin-right: 1.04vw;
+                margin-right: min(1.04vw, 15px);
                 cursor: pointer;
                 transition: box-shadow 0.25s;
 
@@ -140,9 +141,46 @@ main {
                 }
 
                 h3 {
-                    font-size: 1.66vw;
+                    font-size: min(1.66vw, 32px);
                     font-weight: 300;
                     margin: 12px 0;
+                }
+
+                @media screen and (max-width: 768px) {
+                    max-width: unset;
+                    width: 25vw;
+                    margin-right: 2.04vw;
+
+                    &:nth-child(4n) {
+                        margin-right: 2.04vw !important;
+                    }
+                    
+                    &:nth-child(3n) {
+                        margin-right: 0;
+                    }
+                }
+
+                @media screen and (max-width: 600px) {
+                    display: flex;
+                    width: 100%;
+                    margin-right: 0 !important;
+
+                    &:nth-child(4n), &:nth-child(3n) {
+                        margin-right: 0 !important;
+                    }
+
+                    a {
+                        width: 50%;
+                        align-items: center;
+
+                        &:nth-child(2n) {
+                            margin-left: 24px;
+                        }
+                    }
+
+                    h3 {
+                        font-size: 5.64vw;
+                    }
                 }
             }
         }
