@@ -103,7 +103,7 @@ export default defineComponent({
         const babyFamName = ref('');
         const ornamentDates = ref('');
         const formSpecialRequests = ref('');
-        const dollarAmount = ref(20);
+        const dollarAmount = ref(10);
 
         const stripeChargeError = ref('');
 
