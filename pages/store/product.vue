@@ -107,7 +107,7 @@ export default defineComponent({
 
         const stripeChargeError = ref('');
 
-        const publishableKey = 'pk_test_51LsxDgCGzu6CcAA05tXeRA7g5SzzN1l9LnxUu8iCSZCGAYfaDmDYc8AEw6cuEwoWNbplSG2YBUVIE3fL5EqgYy4U002R4RetiP';
+        const publishableKey = 'pk_live_51LsxDgCGzu6CcAA0rjj8XnwQ3F4owAuid8uuKVSx3z2u9KneklJNX15QumkVX3CcO0OGqtFAoSeEkRvm2Vc05iX100qK32yZV6';
 
         onMounted(() => {
             const slug = new URLSearchParams(location.search).get('slug');
