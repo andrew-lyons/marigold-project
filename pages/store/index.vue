@@ -4,8 +4,8 @@
 
         <main>
             <div class="store-hero">
-                <h2>Marigold Project Store?</h2>
-                <p>Perhaps here we explain what the deal is and why there are occasionally some items here.</p>
+                <h2>Holiday Tree Walk Ornaments 2022</h2>
+                <p>Last year, our family honored Nora and other babies gone too soon at our local Holiday Tree Walk. We developed a donation-based ornament that would honor your baby, be displayed at the tree walk for all to see, and then given to you. All donations go to Sufficient Grace Ministries, a beautiful organization who came to the hospital when we lost Nora and blessed us in so many ways. We hope that many more families will feel seen, heard, and blessed in the way that we did.</p>
             </div>
     
             <div class="store-products">
@@ -87,6 +87,11 @@ main {
                 font-weight: 200;
                 z-index: 3;
                 margin-bottom: 0;
+
+                @media screen and (max-width: 600px) {
+                    font-size: 32px;
+                    line-height: 1;
+                }
             }
 
             p {

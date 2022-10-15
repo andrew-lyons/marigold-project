@@ -38,8 +38,11 @@
                         </div>
     
                         <div class="checkout-form-group">
-                            <textarea type="text"
-                                placeholder="Special requests (i.e. godparents instead of grandparents, multiple baby names, etc.)"></textarea>
+                            <textarea
+                                type="text"
+                                v-model="formSpecialRequests"
+                                placeholder="Special requests (i.e. godparents instead of grandparents, multiple baby names, etc.)">
+                            </textarea>
                         </div>
     
                         <div class="checkout-form-group">
@@ -63,6 +66,8 @@
     
                         <a @click="submit">Submit Payment</a>
                     </div>
+
+                    <p class="stripe-charge-error" v-if="stripeChargeError" v-html="stripeChargeError"></p>
                 </div>
             </main>
     
@@ -97,7 +102,10 @@ export default defineComponent({
 
         const babyFamName = ref('');
         const ornamentDates = ref('');
+        const formSpecialRequests = ref('');
         const dollarAmount = ref(20);
+
+        const stripeChargeError = ref('');
 
         const publishableKey = 'pk_test_51LsxDgCGzu6CcAA05tXeRA7g5SzzN1l9LnxUu8iCSZCGAYfaDmDYc8AEw6cuEwoWNbplSG2YBUVIE3fL5EqgYy4U002R4RetiP';
 
@@ -146,14 +154,22 @@ export default defineComponent({
             queryParams.set('babyFamName', babyFamName.value);
             queryParams.set('ornamentDates', ornamentDates.value);
             queryParams.set('formShippingAddress', formShippingAddress.value);
+            queryParams.set('formSpecialRequests', formSpecialRequests.value);
             queryParams.set('amount', (dollarAmount.value * 100).toString());
             queryParams.set('token', token['id']);
             queryParams.set('ornament', post.value.title);
 
             fetch(`https://serverless-stripe-three.vercel.app/api/charge?${queryParams.toString()}`)
             .then(response => response.json())
-            .then(data => console.log('response!!!', data))
-            .catch(err => console.log('woops', err));
+            .then(data => {
+                stripeChargeError.value = "";
+                window.location.href = '/store/thankyou';
+            })
+            .catch(err => {
+                console.log('woops', err);
+
+                stripeChargeError.value = "There was an error processing your payment. Please try again or email us <a href='mailto:micayla@themarigoldproject.com'>here</a>";
+            });
         }
 
         const shippingChange = (currentStat: boolean) => {
@@ -189,10 +205,12 @@ export default defineComponent({
             formShippingAddress,
             formName,
             formEmail,
+            formSpecialRequests,
 
             formNameErr,
             formEmailErr,
             formShippingAddressErr,
+            stripeChargeError,
 
             submit,
             shippingChange,
@@ -325,6 +343,18 @@ input[type=range] {
 </style>
 
 <style lang="scss" scoped>
+.stripe-charge-error {
+    font-size: 24px;
+    line-height: 32px;
+    color: red;
+
+    :deep(a) {
+        text-decoration: underline;
+        color: red;
+        cursor: pointer;
+    }
+}
+
 main {
     margin: 48px auto;
 

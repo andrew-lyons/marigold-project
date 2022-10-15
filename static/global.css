@@ -1,6 +1,6 @@
 @import url('./fonts.css');
 
-.nuxt-link-exact-active {
+.active-route {
     border-bottom: 1px solid var(--primary);
 }
 

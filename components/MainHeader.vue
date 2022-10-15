@@ -2,9 +2,9 @@
     <div>
         <nav>
             <router-link :class="currentRoute === '/' ? 'active-route' : ''" to="/">Home</router-link>
-            <router-link :class="currentRoute === '/about' ? 'active-route' : ''" to="/about">About</router-link>
-            <router-link :class="currentRoute === '/blog' ? 'active-route' : ''" to="/blog">Blog</router-link>
-            <!-- <router-link to="/store">Store</router-link> -->
+            <router-link :class="currentRoute.includes('/about') ? 'active-route' : ''" to="/about">About</router-link>
+            <router-link :class="currentRoute.includes('/blog') ? 'active-route' : ''" to="/blog">Blog</router-link>
+            <router-link :class="currentRoute.includes('/store') ? 'active-route' : ''" to="/store">Store</router-link>
         </nav>
     
         <header>
@@ -23,6 +23,7 @@ const currentRoute = ref('');
 
 onMounted(() => {
     currentRoute.value = location.href;
+    console.log(currentRoute.value);
 })
 </script>
 
@@ -53,6 +54,11 @@ nav {
         font-size: 12px;
         padding: 20px;
         text-decoration: none;
+
+        @media screen and (max-width: 500px) {
+            padding: 20px 12px;
+            font-size: 10px;
+        }
     }
 }
 
@@ -76,8 +82,8 @@ header {
         }
 
         @media screen and (max-width: 600px) {
-            font-size: 64px;
-            line-height: 72px;
+            font-size: 10.66vw;
+            line-height: 1.15;
             margin-bottom: 16px;
             padding: 0 16px;
         }
