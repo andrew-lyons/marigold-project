@@ -14,6 +14,8 @@
 import { onMounted } from 'vue';
 
 onMounted(() => {
+  console.log(this);
+
   const intersectionObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
