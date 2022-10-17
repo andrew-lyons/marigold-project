@@ -2,80 +2,76 @@
     <div>
         <client-only>
             <MainHeader />
-    
+
             <main>
                 <div class="product">
                     <h2>{{ post.title }}</h2>
                     <img :src="post.featured_image" alt="">
                 </div>
-    
-                <div class="checkout">
+
+                <div class="checkout" :class="isLoading ? 'checkout-loadinggray' : ''">
+                    <div v-if="isLoading" class="clock-loader"></div>
+
                     <div class="checkout-form">
                         <div class="checkout-form-group checkout-form-group-wrapped">
                             <div @click="shippingChange(false)">
                                 <input checked type="radio" name="shippingorlocal" ref="formIsLocalPickup">
                                 <p>I'll pick my ornament up locally</p>
                             </div>
-    
+
                             <div @click="shippingChange(true)">
                                 <input type="radio" name="shippingorlocal" ref="formIsShipping">
                                 <p>I'll need my ornament shipped to me ($2 charge)</p>
                             </div>
                         </div>
-    
+
                         <div class="checkout-form-group">
-                            <input :class="formNameErr ? 'checkout-form-group-error' : ''" type="text" v-model="formName" placeholder="Your name (required)">
-                            <input :class="formEmailErr ? 'checkout-form-group-error' : ''" type="text" v-model="formEmail" placeholder="Your email (required)">
+                            <input :class="formNameErr ? 'checkout-form-group-error' : ''" type="text"
+                                v-model="formName" placeholder="Your name (required)">
+                            <input :class="formEmailErr ? 'checkout-form-group-error' : ''" type="text"
+                                v-model="formEmail" placeholder="Your email (required)">
                         </div>
-    
+
                         <div v-if="displayAddressForm" class="checkout-form-group">
-                            <input :class="formShippingAddressErr ? 'checkout-form-group-error' : ''" type="text" v-model="formShippingAddress" placeholder="Full shipping address (required)">
+                            <input :class="formShippingAddressErr ? 'checkout-form-group-error' : ''" type="text"
+                                v-model="formShippingAddress" placeholder="Full shipping address (required)">
                         </div>
-    
+
                         <div class="checkout-form-group">
                             <input type="text" v-model="babyFamName" placeholder="Baby/Family name">
                             <input type="text" v-model="ornamentDates" placeholder="Date(s) for ornament">
                         </div>
-    
+
                         <div class="checkout-form-group">
-                            <textarea
-                                type="text"
-                                v-model="formSpecialRequests"
+                            <textarea type="text" v-model="formSpecialRequests"
                                 placeholder="Special requests (i.e. godparents instead of grandparents, multiple baby names, etc.)">
                             </textarea>
                         </div>
-    
+
                         <div class="checkout-form-group">
-                            <input
-                                v-model="dollarAmount"
-                                type="range"
-                                id="cowbell"
-                                name="cowbell"
-                                :min="displayAddressForm ? 12 : 10"
-                                :max="displayAddressForm ? 102 : 100"
-                                step="10"
-                            >
+                            <input v-model="dollarAmount" type="range" id="cowbell" name="cowbell"
+                                :min="displayAddressForm ? 12 : 10" :max="displayAddressForm ? 102 : 100" step="10">
                             <p class="amount">$ {{ dollarAmount }}</p>
                         </div>
                     </div>
-    
+
                     <stripe-element-card ref="elementRef" :pk="publishableKey" @token="tokenCreated" />
-    
+
                     <div class="checkout-form-submit">
                         <p>Thank you!</p>
-    
+
                         <a @click="submit">Submit Payment</a>
                     </div>
 
                     <p class="stripe-charge-error" v-if="stripeChargeError" v-html="stripeChargeError"></p>
                 </div>
             </main>
-    
+
             <MainFooter />
         </client-only>
     </div>
 </template>
-    
+
 <script lang="ts">
 import { defineComponent, onMounted, Ref, ref } from 'vue';
 
@@ -122,6 +118,8 @@ export default defineComponent({
             }
         };
 
+        const isLoading = ref(true);
+
         const validateForm = (): boolean => {
             if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formEmail.value))) {
                 formEmailErr.value = 'Please include a valid email';
@@ -159,19 +157,25 @@ export default defineComponent({
             queryParams.set('token', token['id']);
             queryParams.set('ornament', post.value.title);
 
+            isLoading.value = true;
+
             fetch(`https://serverless-stripe-three.vercel.app/api/charge?${queryParams.toString()}`)
-            .then(response => response.json())
-            .then(data => {
-                stripeChargeError.value = "";
+                .then(response => response.json())
+                .then(data => {
+                    isLoading.value = false;
 
-                console.log('Data: ', data);
-                window.location.href = '/store/thankyou';
-            })
-            .catch(err => {
-                console.log('woops', err);
+                    stripeChargeError.value = "";
 
-                stripeChargeError.value = "There was an error processing your payment. Please try again or email us <a href='mailto:micaylalyons@themarigoldproject.com'>here</a>";
-            });
+                    console.log('Data: ', data);
+                    window.location.href = '/store/thankyou';
+                })
+                .catch(err => {
+                    isLoading.value = false;
+
+                    console.log('woops', err);
+
+                    stripeChargeError.value = "There was an error processing your payment. Please try again or email us <a href='mailto:micaylalyons@themarigoldproject.com'>here</a>";
+                });
         }
 
         const shippingChange = (currentStat: boolean) => {
@@ -216,7 +220,9 @@ export default defineComponent({
 
             submit,
             shippingChange,
-            tokenCreated
+            tokenCreated,
+
+            isLoading
         }
     }
 });
@@ -399,6 +405,7 @@ main {
 
     .checkout {
         width: 50%;
+        position: relative;
 
         @media screen and (max-width: 768px) {
             width: 100%;
@@ -531,7 +538,62 @@ main {
                 }
             }
         }
+
+        &-loadinggray {
+            opacity: 0.3;
+            pointer-events: none;
+
+            .clock-loader {
+                --clock-color: var(--primary);
+                --clock-width: 4rem;
+                --clock-radius: calc(var(--clock-width) / 2);
+                --clock-minute-length: calc(var(--clock-width) * 0.4);
+                --clock-hour-length: calc(var(--clock-width) * 0.2);
+                --clock-thickness: 0.2rem;
+
+                position: absolute;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: var(--clock-width);
+                height: var(--clock-width);
+                border: 2px solid var(--clock-color);
+                border-radius: 50%;
+
+                left: calc(50% - var(--clock-width) / 2);
+                top: calc(50% - var(--clock-width));
+
+                &::before,
+                &::after {
+                    position: absolute;
+                    content: "";
+                    top: calc(var(--clock-radius) * 0.25);
+                    width: var(--clock-thickness);
+                    background: var(--clock-color);
+                    border-radius: 10px;
+                    transform-origin: center calc(100% - calc(var(--clock-thickness) / 2));
+                    animation: spin infinite linear;
+                }
+
+                &::before {
+                    height: var(--clock-minute-length);
+                    animation-duration: 2s;
+                }
+
+                &::after {
+                    top: calc(var(--clock-radius) * 0.25 + var(--clock-hour-length));
+                    height: var(--clock-hour-length);
+                    animation-duration: 15s;
+                }
+            }
+        }
     }
+
+    @keyframes spin {
+    to {
+        transform: rotate(1turn);
+    }
+}
 }
 </style>
     
