@@ -118,7 +118,7 @@ export default defineComponent({
             }
         };
 
-        const isLoading = ref(true);
+        const isLoading = ref(false);
 
         const validateForm = (): boolean => {
             if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formEmail.value))) {
