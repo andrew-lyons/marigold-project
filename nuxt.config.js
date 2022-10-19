@@ -52,8 +52,40 @@ export default {
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     // https://go.nuxtjs.dev/content
-    '@nuxt/content'
+    '@nuxt/content',
+    '@nuxtjs/i18n',
+    '@nuxtjs/sitemap'
   ],
+
+  sitemap: {
+    // options
+    hostname: 'https://themarigoldproject.com',
+    defaults: {
+      changefreq: 'weekly',
+      priority: 0.5,
+      lastmod: new Date()
+    }
+  },
+
+  i18n: {
+    locales: [
+      {
+        code: 'en',
+        file: 'en.json',
+        name: 'English'
+      },
+      {
+        code: 'es',
+        file: 'es.json',
+        name: 'Español'
+      }
+    ],
+    langDir: 'locales/',
+    defaultLocale: 'en',
+    vueI18n: {
+      fallbackLocale: 'en'
+    }
+  },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {

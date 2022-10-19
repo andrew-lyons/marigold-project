@@ -2,6 +2,8 @@
   <div>
     <MainHeader />
 
+    {{ $t('message') }}
+
     <HomeHero />
     <HomeDividerImageText />
     <HomeTripleImage />
