@@ -33,11 +33,6 @@
     
                         <div class="comment-block-item-reply">
                             <div class="comment-block-item-reply-text" v-html="comment.content"></div>
-    
-                            <!-- <div class="comment-block-item-reply-interactions">
-                    <a><font-awesome-icon icon="fa-comment" /></a>
-                    <a><font-awesome-icon icon="fa-thumbs-up" /></a>
-                  </div> -->
                         </div>
                     </div>
                 </div>

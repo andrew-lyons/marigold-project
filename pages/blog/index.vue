@@ -15,8 +15,7 @@
                         <a @click="redirectDate(post.date)" class="blog-posts-article-meta">{{ post.date }}</a>
                         <a @click="redirect(post.slug, true)" class="blog-posts-article-meta">Leave a comment</a>
 
-                        <a @click="redirect(post.slug)"><img class="blog-posts-article-featured"
-                                :src="post.featured_image" alt=""></a>
+                        <a @click="redirect(post.slug)"><img class="blog-posts-article-featured" :src="post.featured_image" alt=""></a>
 
                         <a @click="redirect(post.slug)" class="blog-posts-article-blurb" v-html="post.excerpt"></a>
 
@@ -34,16 +33,28 @@
                 </div>
 
                 <div class="blog-sidebar">
-                    <div class="blog-sidebar-category">
-                        <h3>Date</h3>
+                    <div ref="filterBtn" class="blog-sidebar-filterdrop">
+                        <button v-if="isMobile" @click="animateFilterHeight()">
+                            <h3>Post Filters</h3>
+                        </button>
 
-                        <a @click="redirectDate(date)" v-for="date, dateIdx in dates" :key="date+dateIdx">{{ date }}</a>
-                    </div>
+                        <div v-if="numPages.length > 1" class="blog-pagination">
+                            <button @click="prevPage()" :disabled="curPage === 0"><img src="../../static/left-arrow.svg" alt=""></button>
+                            <button @click="changePagination(idx+1)" v-for="page, idx in numPages" :key="'f'+idx+'0d'">{{ idx + 1 }}</button>
+                            <button @click="nextPage()" :disabled="curPage === numPages.length-1"><img src="../../static/right-arrow.svg" alt=""></button>
+                        </div>
 
-                    <div class="blog-sidebar-category">
-                        <h3>Categories</h3>
-
-                        <a @click="redirectTags(tag)" v-for="tag, tagIdx in tags" :key="tag+tagIdx">{{ tag }}</a>
+                        <div class="blog-sidebar-category">
+                            <h3>Date</h3>
+    
+                            <a @click="redirectDate(date)" v-for="date, dateIdx in dates" :key="date+dateIdx">{{ date }}</a>
+                        </div>
+    
+                        <div class="blog-sidebar-category">
+                            <h3>Categories</h3>
+    
+                            <a @click="redirectTags(tag)" v-for="tag, tagIdx in tags" :key="tag+tagIdx">{{ tag }}</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -56,7 +67,7 @@
 <script lang="ts">
 // import router from '@/router';
 
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, onMounted, Ref, ref } from 'vue';
 import MainHeader from '~/components/MainHeader.vue';
 
 export default defineComponent({
@@ -68,21 +79,29 @@ export default defineComponent({
         const wp = 'https://public-api.wordpress.com/rest/v1.1/sites/micaylalyons.wordpress.com';
         const loading = ref(true);
         const allPosts = ref([] as any);
+        const numPages: Ref<undefined[]> = ref([]);
+        const windowWidth = ref(1440);
+        const curPage = ref(0);
+        const paginationEnd = ref(6);
+        const filterBtn: Ref<any> = ref(null);
 
-        fetch(`${wp}/posts`)
+        fetch(`${wp}/posts?number=100`)
             .then(response => response.json())
             .then(data => {
                 allPosts.value = data.posts.filter((post: any) => Object.keys(post.categories).includes('blog-post'))
+                numPages.value = Array.from(Array(Math.ceil(allPosts.value.length / 6)))
                 loading.value = false;
             });
 
         const posts = computed(() => {
+            const start = curPage.value * paginationEnd.value;
+
             return allPosts.value.map((post: any) => {
                 post.date = new Date(post.date).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' });
                 post.excerpt = post.excerpt.replaceAll('[', '').replaceAll(']', '');
                 post.featured_image = post.featured_image ? post.featured_image : "../../static/marigold_bg.jpg"
                 return post
-            });
+            }).slice(start, start + paginationEnd.value);
         });
 
         const dates = computed(() => {
@@ -104,6 +123,24 @@ export default defineComponent({
             }).flat());
         });
 
+        const isMobile = computed(() => {
+            return windowWidth.value <= 1024;
+        });
+
+        const changePagination = (page: number) => {
+            curPage.value = page-1;
+        }
+
+        const nextPage = () => {
+            if (curPage.value === numPages.value.length-1) return
+            curPage.value += 1;
+        }
+
+        const prevPage = () => {
+            if (curPage.value === 0) return
+            curPage.value -= 1;
+        }
+
         const redirect = (slug: string, commentSection = false) => {
             window.location.href = `/blog/detail${commentSection ? '#comments' : ''}?slug=${slug}`;
         }
@@ -117,15 +154,41 @@ export default defineComponent({
             window.location.href = `/blog/filter?categoryfilter=${tag}`;
         }
 
+        const animateFilterHeight = () => {
+            const height = parseInt(getComputedStyle(filterBtn.value).height, 10);
+            if (height <= 56) {
+                filterBtn.value.classList.add('opened');
+                filterBtn.value.style.height = filterBtn.value.scrollHeight + 'px';
+            }
+            else {
+                filterBtn.value.classList.remove('opened');
+                filterBtn.value.style.height = '56px';
+            }
+        }
+
+        onMounted(() => {
+            windowWidth.value = window.innerWidth;
+            window.addEventListener('resize', () => windowWidth.value = window.innerWidth)
+        });
+
         return {
             posts,
             dates,
             tags,
             loading,
+            curPage,
+            paginationEnd,
+            numPages,
 
             redirect,
             redirectDate,
-            redirectTags
+            redirectTags,
+            changePagination,
+            prevPage,
+            nextPage,
+            animateFilterHeight,
+            filterBtn,
+            isMobile
         }
     }
 });
@@ -226,7 +289,7 @@ export default defineComponent({
 
         @media screen and (max-width: 1024px) {
             width: 100%;
-            order: 2;
+            order: 3;
             padding: 0;
         }
 
@@ -343,16 +406,62 @@ export default defineComponent({
     }
 
     &-sidebar {
-        display: flex;
-        flex-wrap: wrap;
+        position: sticky;
+        top: 75px;
         width: 31.6%;
         height: 100%;
 
         @media screen and (max-width: 1024px) {
-            width: 100%;
+            width: calc(100% + 8px);
+            left: -4px;
             order: 1;
-            justify-content: space-between;
-            align-items: flex-start;
+            padding: 24px 0;
+            background-color: #f0e9e8;
+            top: 52px;
+        }
+
+        &-filterdrop {
+            width: 100%;
+
+            transition: height 0.5s;
+
+            @media screen and (max-width: 1024px) {
+                height: 56px;
+                overflow: hidden;
+            }
+
+            &.opened {
+                > button {
+                    background: var(--primary-light);
+                    
+                    h3 {
+                        color: var(--white);
+                    }
+                }
+            }
+
+            > button {
+                width: 100%;
+                background: var(--white);
+                border: none;
+                padding: 16px 0;
+                margin-bottom: 16px;
+
+                h3 {
+                    font-family: 'Montserrat';
+                    font-weight: 200;
+                    font-size: 24px;
+                    line-height: 24px;
+                    margin: 0;
+                }
+            }
+
+            @media screen and (max-width: 1024px) {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
         }
 
         &-category {
@@ -363,10 +472,6 @@ export default defineComponent({
 
             @media screen and (max-width: 1024px) {
                 width: 45%;
-            }
-
-            @media screen and (max-width: 768px) {
-                width: 100%;
             }
 
             h3 {
@@ -398,6 +503,47 @@ export default defineComponent({
                     background-color: var(--primary-light);
                     color: var(--white);
                 }
+            }
+        }
+    }
+
+    &-pagination {
+        display: flex;
+        justify-content: center;
+        padding: 20px 0 40px;
+        width: 100%;
+
+        @media screen and (max-width: 1024px) {
+            order: 2;
+        }
+
+        button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 16px 0 0;
+            padding: 0;
+            background: none;
+            border: none;
+            font-size: 20px;
+            line-height: 20px;
+            height: 20px;
+            width: 20px;
+            cursor: pointer;
+
+            &:last-child {
+                margin: 0;
+            }
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
+
+            &:disabled {
+                opacity: 0.5;
+                pointer-events: none;
+                cursor: default;
             }
         }
     }
