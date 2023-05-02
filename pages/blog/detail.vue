@@ -28,7 +28,11 @@
                     <div class="comment-block-item" v-for="comment, commentIdx in comments" :key="comment+commentIdx">
                         <div class="comment-block-item-author">
                             <img :src="comment.author.avatar_URL" alt="">
-                            <h4 v-html="comment.author.name"></h4>
+
+                            <div class="comment-block-item-author-namedate">
+                                <h4 v-html="comment.author.name"></h4>
+                                <p v-html="comment.date"></p>
+                            </div>
                         </div>
     
                         <div class="comment-block-item-reply">
@@ -71,10 +75,32 @@ export default defineComponent({
                     .then(response => response.json())
                     .then(data => {
                         comments.value = data.comments;
+                        comments.value = comments.value.map((comment: any)=> {
+                            comment.date = new Date(comment.date).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' });
+                            return comment;
+                        });
+                    
+                        fetch(`https://serverless-blog-nine.vercel.app/api/comments?slug=${slug}`)
+                        .then((vercelResponse: any) => vercelResponse.json())
+                        .then((vercelData) => {
+                            const vercelComments = vercelData.comments;
+
+                            vercelComments.forEach((comment: any) => {
+                                comments.value.push({
+                                    content: `<p>${comment.comment}</p>`,
+                                    date: new Date(comment.date).toLocaleString('default', { month: 'long', day: 'numeric', year: 'numeric' }),
+                                    author: {
+                                        name: comment.name
+                                    }
+                                })
+                            })
+
+                            comments.value.sort((a: any, b: any) => new Date(a.date).getUTCDate() - new Date(b.date).getUTCDate());
+                        })
                     })
                 }
             });
-        })
+        });
 
         const redirectDate = (date: string) => {
             const toDate = new Date(date).toLocaleString('default', { month: 'long', year: 'numeric' });
@@ -236,27 +262,60 @@ main {
             &-item {
                 display: flex;
                 justify-content: space-between;
-                margin-bottom: 64px;
+                padding: 32px 0;
 
                 @media screen and (max-width: 768px) {
                     flex-wrap: wrap;
+                    border-bottom: 1px solid var(--primary-light);
+
+                    &:last-child {
+                        border-bottom: none;
+                    }
+
+                    &:first-child {
+                        padding-top: 0;
+                    }
                 }
 
                 &-author {
                     display: flex;
                     align-items: center;
                     margin-right: 16px;
+                    max-width: 300px;
 
                     @media screen and (max-width: 768px) {
                         margin-bottom: 32px;
                     }
 
-                    h4 {
-                        margin: 0 0 0 16px;
-                        font-weight: 300;
-                        font-size: 24px;
-                        line-height: 24px;
-                        width: 125px;
+                    &-namedate {
+                        display: flex;
+                        flex-wrap: wrap;
+                        justify-content: flex-start;
+                        text-align: left;
+                        align-items: center;
+                        padding: 16px;
+                        width: 150px;
+
+                        @media screen and (max-width: 1024px) {
+                            width: 125px;
+                        }
+
+                        @media screen and (max-width: 768px) {
+                            width: 100%;
+                        }
+
+                        h4 {
+                            margin: 0 0 8px 0;
+                            font-weight: 300;
+                            font-size: 24px;
+                            line-height: 24px;
+                        }
+
+                        p {
+                            margin: 0;
+                            font-size: 12px;
+                            line-height: 12px;
+                        }
                     }
                 }
 
@@ -295,15 +354,12 @@ main {
                         }
                     }
 
-                    &-text {
-                        // margin-bottom: 32px;
-
-                        :deep(p) {
-                            margin: 0;
-                            letter-spacing: 1.25px;
-                            line-height: 1.5;
-                            color: var(--primary);
-                        }
+                    &-text * {
+                        margin: 0;
+                        letter-spacing: 1.25px;
+                        line-height: 1.25;
+                        font-family: 'Montserrat';
+                        color: var(--primary);
                     }
 
                     button {

@@ -13,6 +13,7 @@
 
             <div class="column">
                 <h4>Get In Touch</h4>
+                <a class="email" href="mailto:micaylalyons@themarigoldproject.com">micaylalyons@themarigoldproject.com</a>
             </div>
         </div>
     </footer>
@@ -93,6 +94,11 @@ footer {
                             fill: grey;
                         }
                     }
+                }
+
+                &.email {
+                    width: 100%;
+                    word-wrap: break-word;
                 }
             }
 

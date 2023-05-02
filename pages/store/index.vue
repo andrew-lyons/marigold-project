@@ -3,22 +3,11 @@
         <MainHeader />
 
         <main>
-            <div class="store-hero">
-                <h2>Holiday Tree Walk Ornaments 2022</h2>
-                <p>Last year, our family honored Nora and other babies gone too soon at our local Holiday Tree Walk. We developed a donation-based ornament that would honor your baby, be displayed at the tree walk for all to see, and then given to you. All donations go to Sufficient Grace Ministries, a beautiful organization who came to the hospital when we lost Nora and blessed us in so many ways. We hope that many more families will feel seen, heard, and blessed in the way that we did.</p>
-            </div>
-    
-            <div class="store-products">
-                <div
-                    class="store-products-item"
-                    v-for="ornament, idx in posts"
-                    :key="ornament+' l '+idx"
-                    @click="redirect(ornament.slug)"
-                >
-                    <a class="store-products-item-image"><img :src="ornament.featured_image"></a>
-                    <a><h3>{{ ornament.title }}</h3></a>
-                </div>
-            </div>
+            <a href="/store/fulfillmentpolicy"><h3>Fulfillment Policy + Returns/Refunds</h3></a>
+
+            <p>Thank you to everyone who donated towards our goals in 2022. We raised just under $700 this go round!</p>
+
+            <p>Check back in around the holiday season this year, or email us <a href="mailto:micaylalyons@themarigoldproject.com">HERE</a></p>
         </main>
 
         <MainFooter />
@@ -26,42 +15,42 @@
 </template>
     
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
     name: 'StoreView',
-    setup() {
-        const wp = 'https://public-api.wordpress.com/rest/v1.1/sites/micaylalyons.wordpress.com';
-        const loading = ref(true);
-        const allPosts = ref([] as any);
+    // setup() {
+    //     const wp = 'https://public-api.wordpress.com/rest/v1.1/sites/micaylalyons.wordpress.com';
+    //     const loading = ref(true);
+    //     const allPosts = ref([] as any);
 
-        fetch(`${wp}/posts`)
-            .then(response => response.json())
-            .then(data => {
-                allPosts.value = data.posts.filter((post: any) => Object.keys(post.categories).includes('ornament'))
-                loading.value = false;
+    //     fetch(`${wp}/posts`)
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             allPosts.value = data.posts.filter((post: any) => Object.keys(post.categories).includes('ornament'))
+    //             loading.value = false;
 
-                console.log(allPosts);
-            });
+    //             console.log(allPosts);
+    //         });
 
-        const posts = computed(() => {
-            return allPosts.value.map((post: any) => {
-                post.featured_image = post.featured_image ? post.featured_image : "../../static/marigold_bg.jpg"
-                return post
-            });
-        });
+    //     const posts = computed(() => {
+    //         return allPosts.value.map((post: any) => {
+    //             post.featured_image = post.featured_image ? post.featured_image : "../../static/marigold_bg.jpg"
+    //             return post
+    //         });
+    //     });
 
-        const redirect = (slug: string) => {
-            window.location.href = `/store/product?slug=${slug}`;
-        }
+    //     const redirect = (slug: string) => {
+    //         window.location.href = `/store/product?slug=${slug}`;
+    //     }
 
-        return {
-            posts,
-            loading,
+    //     return {
+    //         posts,
+    //         loading,
 
-            redirect
-        }
-    }
+    //         redirect
+    //     }
+    // }
 });
 </script>
 
