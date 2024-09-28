@@ -17,7 +17,7 @@
         <div class="triple-image-text">
             <h4>About Me</h4>
 
-            <p>Hello! My name is Micayla Lyons, and I am a Christian, wife, mama to our sweet babies in heaven, and a mental health counselor. I love Jesus and my family abundantly, and am passionate about mental health advocacy, and now, pregnancy loss advocacy.</p>
+            <p>Hello! My name is Micayla Lyons, and I am a mental health counselor, wife, mama to our sweet babies in heaven and on earth.. I love my family abundantly, and am passionate about mental health advocacy, perinatal mental health and pregnancy loss advocacy.</p>
 
             <a href="/about">Find out more</a>
         </div>

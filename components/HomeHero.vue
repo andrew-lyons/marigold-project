@@ -20,7 +20,7 @@
         <h1>Hello and welcome!</h1>
   
         <p>
-          Thank you for being here to contribute to the mission of raising awareness and increasing advocacy for perinatal loss. If you are here because you or a loved one have experienced the devastation of perinatal loss, I am so deeply sorry. We hope that you find solace, the holding of space, and resolution on this site.
+          Thank you for being here to contribute to the mission of raising awareness and increasing advocacy for perinatal loss. If you are here because you or a loved one have experienced the devastation of perinatal loss, I am so deeply sorry. We hope that you find solace, the holding of space, and the feeling of being seen on this site.
         </p>
       </div>
     </div>

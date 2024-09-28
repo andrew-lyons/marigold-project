@@ -7,13 +7,11 @@
         <h3>Fulfillment Policy + Returns/Refunds</h3>
       </a>
 
-      <p>Thank you to everyone who donated towards our goals in 2022. We raised just under $700 this go round!</p>
-
-      <p>Check back in around the holiday season this year, or email us <a href="mailto:micaylalyons@themarigoldproject.com">HERE</a></p>
-
       <div class="store-hero">
-        <h2>Holiday Tree Walk Ornaments 2022</h2>
-        <p>Last year, our family honored Nora and other babies gone too soon at our local Holiday Tree Walk. We developed a donation-based ornament that would honor your baby, be displayed at the tree walk for all to see, and then given to you. All donations go to Sufficient Grace Ministries, a beautiful organization who came to the hospital when we lost Nora and blessed us in so many ways. We hope that many more families will feel seen, heard, and blessed in the way that we did.</p>
+        <h2>Holiday Tree Walk Ornaments 2024</h2>
+        <p>These ornaments are designed to honor babies gone too soon at our local Holiday Tree Walk in Marietta, OH.</p>
+        <p>We developed a donation-based ornament that would honor your baby, be displayed at the tree walk for all to see, and then given to you.</p>
+        <p>All donations go to Sufficient Grace Ministries, a beautiful organization who came to the hospital when we lost Nora and blessed us in so many ways. We hope that many more families will feel seen, heard, and blessed in the way that we did.</p>
       </div>
 
       <div class="store-products">
