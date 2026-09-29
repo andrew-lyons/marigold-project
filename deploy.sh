@@ -3,9 +3,15 @@
 # abort on errors
 set -e
 
+# build a fresh static site into dist/
+# (webpack 4 needs the legacy OpenSSL provider on Node 17+)
+NODE_OPTIONS=--openssl-legacy-provider npm run generate
+
 cd dist
 
-git init
+# start from a clean repo each time so there is always something to commit
+rm -rf .git
+git init -b main
 git add -A
 git commit -m 'deploying...'
 

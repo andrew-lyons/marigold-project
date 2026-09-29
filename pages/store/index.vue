@@ -11,7 +11,7 @@
         <h2>Holiday Tree Walk Ornaments 2026</h2>
         <p>These ornaments are designed to honor babies gone too soon at our local Holiday Tree Walk in Marietta, OH.</p>
         <p>We developed a donation-based ornament that would honor your baby, be displayed at the tree walk for all to see, and then given to you.</p>
-        <p>All donations will go towards expenses to hold a Pregnancy and Infant Loss (PAIL) Awareness Run/Walk that will be hosted by my counseling practice, Willow Counseling, in October 2027 during PAIL month. Expenses include yard signs to be placed along the path to display the names of babies gone too soon. Information regarding the Run/Walk will be posted to Willow Counseling's Facebook page: https://www.facebook.com/profile.php?id=61552405737229</p>
+        <p>All donations will go towards expenses to hold a Pregnancy and Infant Loss (PAIL) Awareness Run/Walk that will be hosted by my counseling practice, Willow Counseling, in October 2027 during PAIL month. Expenses include yard signs to be placed along the path to display the names of babies gone too soon. Information regarding the Run/Walk will be posted to Willow Counseling's Facebook page: <a href="https://www.facebook.com/profile.php?id=61552405737229">https://www.facebook.com/profile.php?id=61552405737229</a></p>
       </div>
 
       <div class="store-products">
