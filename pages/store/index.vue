@@ -8,10 +8,10 @@
       </a>
 
       <div class="store-hero">
-        <h2>Holiday Tree Walk Ornaments 2024</h2>
+        <h2>Holiday Tree Walk Ornaments 2026</h2>
         <p>These ornaments are designed to honor babies gone too soon at our local Holiday Tree Walk in Marietta, OH.</p>
         <p>We developed a donation-based ornament that would honor your baby, be displayed at the tree walk for all to see, and then given to you.</p>
-        <p>All donations go to Sufficient Grace Ministries, a beautiful organization who came to the hospital when we lost Nora and blessed us in so many ways. We hope that many more families will feel seen, heard, and blessed in the way that we did.</p>
+        <p>All donations will go towards expenses to hold a Pregnancy and Infant Loss (PAIL) Awareness Run/Walk that will be hosted by my counseling practice, Willow Counseling, in October 2027 during PAIL month. Expenses include yard signs to be placed along the path to display the names of babies gone too soon. Information regarding the Run/Walk will be posted to Willow Counseling's Facebook page: https://www.facebook.com/profile.php?id=61552405737229</p>
       </div>
 
       <div class="store-products">
